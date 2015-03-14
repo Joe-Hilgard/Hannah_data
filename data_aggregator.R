@@ -78,9 +78,13 @@ temp = dat$FaceFilename[dat$Block==3]
 table(temp)
 
 # We can do a similar thing to fix the point of fixation
+races = c("Black", "White")
 forehead_range = c(1:8, 25:32)
-eyes_range = c(9:16, 33:40) # BUG: Matches for forehead 29.
+forehead_range = paste(races, rep(forehead_range, each=2), "_", sep="")
+eyes_range = c(9:16, 33:40) 
+eyes_range = paste(races, rep(eyes_range, each=2), "_", sep="")
 nose_range = c(17:24, 41:48)
+nose_range = paste(races, rep(nose_range, each=2), "_", sep="")
 
 for (i in forehead_range) {
   dat$fixation[grepl(i, dat$FaceFilename) & dat$Block == 3] = "forehead"
