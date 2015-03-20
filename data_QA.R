@@ -6,7 +6,7 @@ dat2 = dat[dat$Block == 2,]
 dat3 = dat[dat$Block == 3,]
 
 # Look for people with insanely fast RTs -- they're just jamming a button
-meanRT = tapply(dat2$RT, INDEX=dat2$ID, FUN=mean, na.rm=T)
+meanRT = tapply(dat2$RT, INDEX=dat2$ID, FUN=mean)
 meanRT
 barplot(meanRT)
 hist(meanRT, breaks=10)
@@ -16,6 +16,20 @@ meanRT
 barplot(meanRT)
 hist(meanRT, breaks=10)
 
+countNA = function(x) {
+  temp = is.na(x)
+  count = sum(temp)
+  return(count)
+}
+numNA = tapply(dat2$Error, INDEX=dat2$ID, FUN=countNA)
+numNA
+barplot(numNA)
+hist(numNA)
+
+numNA = tapply(dat3$Error, INDEX=dat3$ID, FUN=countNA)
+numNA
+barplot(numNA)
+hist(numNA)
 # who's doing shitty?
 meanError = tapply(dat2$Error, INDEX=dat2$ID, FUN=mean, na.rm=T)
 meanError
@@ -55,9 +69,6 @@ badSubs2 = data.frame("ID" = names(badTab),
                      "reason" = "Bad accuracy")
 # Repeat for Block 3
 table(dat3$ID) # 96 trials/subject
-# grab subjects who got <112 correct
-tab = 192 - tapply(dat3$Error, dat3$ID, FUN=sum)
-badTab = tab[tab < 112]
 # critical number of correct?
 alpha = .01
 qbinom(p = 1-alpha, 
@@ -74,3 +85,4 @@ badSubs3 = data.frame("ID" = names(badTab),
 # combine the data tables
 badSubs = rbind(badSubs2, badSubs3)
 
+write.table(badSubs, file="badSubs.txt", sep="\t", row.names=F)
