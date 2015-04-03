@@ -2,6 +2,7 @@
 # install.packages(c('dplyr', 'magrittr'))
 library(dplyr)
 library(magrittr)
+library(lme4)
 
 dat = read.delim("cleaned_data.txt", stringsAsFactors=F)
 
@@ -44,3 +45,18 @@ dat2.acc =
   group_by(ID, race, WordValence, fixation) %>%
   summarise(meanACC = 1 - mean(Error, na.rm=T),
             count = n())
+
+m1 = lmer(meanACC ~ race * WordValence * fixation + (1|ID), data=dat2.acc)
+summary(m1)
+Anova(m1, type=3)
+summary(m1)$coefficients
+
+dat2.rt = 
+  dat2  %>% 
+  group_by(ID, race, WordValence, fixation) %>%
+  summarise(meanRT = mean(RT, na.rm=T),
+            count = n())
+
+m2 = lmer(meanRT ~ race * WordValence * fixation + (1|ID), data=dat2.rt)
+Anova(m2, type=3)
+summary(m2)
