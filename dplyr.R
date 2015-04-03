@@ -60,3 +60,15 @@ dat2.rt =
 m2 = lmer(meanRT ~ race * WordValence * fixation + (1|ID), data=dat2.rt)
 Anova(m2, type=3)
 summary(m2)
+
+# each time you use summarise() you drop one level of grouping
+dat2 %>%
+  group_by(ID, race, WordValence, fixation) %>%
+  summarise(RT = mean(RT, na.rm=T)) %T>%
+  print %>%
+  summarise(RT = mean(RT, na.rm=T)) %T>%
+  print %>%
+  summarise(RT = mean(RT, na.rm=T)) %T>%
+  print %>%
+  summarise(RT = mean(RT, na.rm=T)) %>%
+  print
